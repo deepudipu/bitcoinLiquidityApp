@@ -3,6 +3,18 @@ import requests
 import pandas as pd
 from datetime import datetime
 
+
+def format_money(value):
+    if value >= 1_000_000_000:
+        return f"${value/1_000_000_000:.1f}B"
+    elif value >= 1_000_000:
+        return f"${value/1_000_000:.1f}M"
+    elif value >= 1_000:
+        return f"${value/1_000:.1f}K"
+    else:
+        return f"${value:.2f}"
+
+
 st.set_page_config(
     page_title="Bitcoin Liquidity Dashboard",
     layout="wide"
@@ -100,13 +112,13 @@ try:
     with col2:
         st.metric(
             f"Buy Liquidity ({range_percent}%)",
-            f"${total_buy_liquidity:,.0f}"
+            format_money(total_buy_liquidity)
         )
 
     with col3:
         st.metric(
             f"Sell Liquidity ({range_percent}%)",
-            f"${total_sell_liquidity:,.0f}"
+            format_money(total_sell_liquidity)
         )
 
     st.info(
@@ -132,7 +144,7 @@ try:
         )
 
         display_bid_df["Liquidity USD"] = display_bid_df["Liquidity USD"].map(
-            lambda x: f"${x:,.2f}"
+            format_money
         )
 
         st.table(display_bid_df)
@@ -154,7 +166,7 @@ try:
         )
 
         display_ask_df["Liquidity USD"] = display_ask_df["Liquidity USD"].map(
-            lambda x: f"${x:,.2f}"
+            format_money
         )
 
         st.table(display_ask_df)
